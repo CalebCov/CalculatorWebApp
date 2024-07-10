@@ -20,8 +20,8 @@ function handleInteraction(value) {
 }
 
 function handleNumericInput(value) {
+    if (value === '.' && currValue.includes('.')) {return}
     currValue += value
-   
 }
 
 function handleOperatorInput(value) {
@@ -34,25 +34,52 @@ function handleOperatorInput(value) {
     currValue = ''
 
 }
-
 function handleEvaluate() {
-    if (operations.length == 0 ) {return}
-    let finalAmount = operations[0]
-    if (!currValue) {
-        operations.pop()
-    } else {
-        operations.push(currValue)
-        currValue = ''
+    if (operations.length === 0) {
+        return;
     }
-    for (let i = 0; i < operations.length; i++) {
-        if (i % 2 == 0) {
-            //Numeric Value
 
+    if (currValue) {
+        operations.push(currValue);
+        currValue = '';
+    } else {
+        operations.pop();
+    }
 
+    let finalAmount = parseFloat(operations[0]);
+    let prevOperator = null;
+
+    for (let i = 1; i < operations.length; i++) {
+        if (operators.includes(operations[i])) {
+            prevOperator = operations[i];
         } else {
-            //Operator value
+            const currentValue = parseFloat(operations[i]);
+
+            switch (prevOperator) {
+                case '+':
+                    finalAmount += currentValue;
+                    break;
+                case '-':
+                    finalAmount -= currentValue;
+                    break;
+                case '*':
+                    finalAmount *= currentValue;
+                    break;
+                case '/':
+                    finalAmount /= currentValue;
+                    break;
+                case '%':
+                    finalAmount %= currentValue;
+                    break;
+                default:
+                    break;
+            }
         }
     }
+
+    currValue = finalAmount.toString();
+    operations = [];
+    updateUI();
 }
 
 function handleReset() {
