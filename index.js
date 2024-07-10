@@ -36,7 +36,23 @@ function handleOperatorInput(value) {
 }
 
 function handleEvaluate() {
+    if (operations.length == 0 ) {return}
+    let finalAmount = operations[0]
+    if (!currValue) {
+        operations.pop()
+    } else {
+        operations.push(currValue)
+        currValue = ''
+    }
+    for (let i = 0; i < operations.length; i++) {
+        if (i % 2 == 0) {
+            //Numeric Value
 
+
+        } else {
+            //Operator value
+        }
+    }
 }
 
 function handleReset() {
