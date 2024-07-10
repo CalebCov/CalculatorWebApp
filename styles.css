@@ -1,0 +1,55 @@
+:root {
+    --bg-color: #121212;        /* Dark gray for the background */
+    --text-color: #e5e5e5;      /* Light gray for the text */
+    --bg-light: #1f1f1f;        /* Slightly lighter gray for light backgrounds */
+    --accent-color: #bb86fc;    /* Soft purple for accent color */
+    /* --button-color: #272727;    /* Medium dark gray for buttons */
+    /* --button-hover-color: #333333; Slightly lighter gray for button hover state */
+    /* --button-text-color: #e5e5e5;  Same light gray for button text */ 
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Jetbrains Mono', monospace;
+}
+
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+}
+
+.calcContainer {
+    background-color: white;
+    flex: 1;
+    border-radius: 14px;
+    padding: 14px;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.display {
+    background-color: var(--bg-light);
+    padding: 14px;
+    border-radius: 8px;
+    border: 2px solid var(--text-color);
+    flex: 1;
+    align-items: center;
+    justify-content: end;
+    font-size: 1.6em;
+    line-height: 1rem;
+    overflow: hidden;
+}
+
+.display h1 {
+    white-space: nowrap;
+    text-align: end;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+}
