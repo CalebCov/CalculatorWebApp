@@ -1,39 +1,46 @@
-const displayInput = document.getElementById('inputValue')
+const displayInput = document.getElementById('inputValue');
 
-//Variables
-const operators = ['-', '+', '%', '*', '/']
-let operations = []
-let currValue = ''
+// Variables
+const operators = ['-', '+', '%', '*', '/'];
+let operations = [];
+let currValue = '';
 
-//Functions & Operations
+// Functions & Operations
 
 function handleInteraction(value) {
-    console.log(value)
+    console.log(value);
     if (operators.includes(value)) {
-        console.log('Clicked an operator: ', value)
-        handleOperatorInput(value)
+        console.log('Clicked an operator: ', value);
+        handleOperatorInput(value);
     } else {
-        console.log('Clicked a numeric value: ', value)
-        handleNumericInput(value)
+        console.log('Clicked a numeric value: ', value);
+        handleNumericInput(value);
     }
-    updateUI()
+    updateUI();
 }
 
 function handleNumericInput(value) {
-    if (value === '.' && currValue.includes('.')) {return}
-    currValue += value
+    if (value === '.' && currValue.includes('.')) {
+        return; // Prevent multiple decimals
+    }
+    currValue += value;
 }
 
 function handleOperatorInput(value) {
     if (!currValue) {
-        return
+        return;
     }
-
-    operations.push(currValue)
-    operations.push(value)
-    currValue = ''
-
+    if (value === '%') {
+        if (currValue) {
+            currValue = (parseFloat(currValue) / 100).toString();
+        }
+        return;
+    }
+    operations.push(currValue);
+    operations.push(value);
+    currValue = '';
 }
+
 function handleEvaluate() {
     if (operations.length === 0) {
         return;
@@ -83,12 +90,12 @@ function handleEvaluate() {
 }
 
 function handleReset() {
-    currValue = ''
-    operations = []
-    updateUI()
+    currValue = '';
+    operations = [];
+    updateUI();
 }
 
 function updateUI() {
-    const displayString = operations.join(' ') +  ' ' + currValue
-    displayInput.innerText = displayString.trim() ? displayString : '0'
-} 
+    const displayString = operations.join(' ') + ' ' + currValue;
+    displayInput.innerText = displayString.trim() ? displayString : '0';
+}
