@@ -1,13 +1,18 @@
 const displayInput = document.getElementById('inputValue');
 
 // Variables
-const operators = ['-', '+', '%', '*', '/'];
+const operators = ['-', '+', '%', '*', '/', '(', ')'];
 let operations = [];
 let currValue = '';
+let openParentheses = 0;
+let isError = false; // Track if there is an error
 
 // Functions & Operations
 
 function handleInteraction(value) {
+    if (isError) {
+        return; // Prevent further input if there's an error
+    }
     console.log(value);
     if (operators.includes(value)) {
         console.log('Clicked an operator: ', value);
@@ -27,75 +32,82 @@ function handleNumericInput(value) {
 }
 
 function handleOperatorInput(value) {
-    if (!currValue) {
-        return;
-    }
-    if (value === '%') {
+    if (value === '(') {
+        if (currValue && !operators.includes(currValue.slice(-1))) {
+            // Prevent cases like "2("
+            operations.push(currValue);
+            currValue = '';
+        }
+        operations.push(value);
+        openParentheses++;
+    } else if (value === ')') {
+        if (openParentheses === 0) {
+            return; // Prevent adding a closing parenthesis without an opening parenthesis
+        }
+        if (currValue) {
+            operations.push(currValue);
+            currValue = '';
+        }
+        operations.push(value);
+        openParentheses--;
+    } else if (value === '%') {
         if (currValue) {
             currValue = (parseFloat(currValue) / 100).toString();
         }
-        return;
+    } else {
+        if (!currValue) {
+            return;
+        }
+        operations.push(currValue);
+        operations.push(value);
+        currValue = '';
     }
-    operations.push(currValue);
-    operations.push(value);
-    currValue = '';
 }
 
 function handleEvaluate() {
-    if (operations.length === 0) {
-        return;
-    }
-
     if (currValue) {
         operations.push(currValue);
         currValue = '';
-    } else {
-        operations.pop();
     }
 
-    let finalAmount = parseFloat(operations[0]);
-    let prevOperator = null;
-
-    for (let i = 1; i < operations.length; i++) {
-        if (operators.includes(operations[i])) {
-            prevOperator = operations[i];
-        } else {
-            const currentValue = parseFloat(operations[i]);
-
-            switch (prevOperator) {
-                case '+':
-                    finalAmount += currentValue;
-                    break;
-                case '-':
-                    finalAmount -= currentValue;
-                    break;
-                case '*':
-                    finalAmount *= currentValue;
-                    break;
-                case '/':
-                    finalAmount /= currentValue;
-                    break;
-                case '%':
-                    finalAmount %= currentValue;
-                    break;
-                default:
-                    break;
-            }
-        }
+    // If there are open parentheses not closed, return an error
+    if (openParentheses !== 0) {
+        displayError();
+        return;
     }
 
-    currValue = finalAmount.toString();
-    operations = [];
+    // Evaluate the expression
+    try {
+        const expression = operations.join('');
+        const result = eval(expression); // Evaluate expression
+        currValue = result.toString();
+        operations = [];
+    } catch (e) {
+        displayError();
+    }
     updateUI();
 }
 
 function handleReset() {
     currValue = '';
     operations = [];
+    openParentheses = 0;
+    isError = false;
     updateUI();
 }
 
+function displayError() {
+    displayInput.innerText = 'Error';
+    operations = [];
+    openParentheses = 0;
+    isError = true;
+}
+
 function updateUI() {
-    const displayString = operations.join(' ') + ' ' + currValue;
+    if (isError) {
+        displayInput.innerText = 'Error';
+        return;
+    }
+    const displayString = operations.join('') + currValue;
     displayInput.innerText = displayString.trim() ? displayString : '0';
 }
